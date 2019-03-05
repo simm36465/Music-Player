@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+    <script src="jquery-2.2.3.min.js"></script>
+</head>
+
+<body>
+    <div id="container">
+        <div id="containertop">
+            <img style="width: 390px;border-radius: 10px 10px 0px 0px;" src="poster/poster2.jpg">
+
+        </div>
+        <div id="containerBottom">
+            <h3 id="songName">song name</h3>
+            <h4 id="songArtist">song artist</h4>
+        </div>
+        <div id="bttons">
+            <button id="backward" onclick="pre()"><i class="fa fa-backward"></i></button>
+            <button id="play" onclick="playPause()"><i class=""></i></button>
+            <button id="forward" onclick="next()"><i class="fa fa-forward"></i></button>
+        </div>
+        <div id="timeNow">
+            00:00 / 00:00
+        </div>
+        <div id="durationBar">
+            <div id="expandingBar"></div>
+            <div id="movingBar"></div>
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        var songs = ["music/one.mp3", "music/two.mp3", "music/three.mp3"];
+        var nameSongs = ["Eminem_-_Love_The_Way_You_Lie_ft._Rihanna", "Maître_Gims_-_Tout_donner", "Jennifer_Lopez_-_On_The_Floor_ft._Pitbull"];
+        var artists = ["Eminem ft._Rihanna", "Maître_Gims", "Jennifer_Lopez ft._Pitbull"];
+        var posters = ["poster/poster1.jpg", "poster/poster2.jpg", "poster/poster3.jpg"];
+
+        var sonename = document.getElementById("songName");
+        var songArtist = document.getElementById("songArtist");
+        var expandingBar = document.getElementById("expandingBar");
+        var timeNow = document.getElementById("timeNow");
+        var Play = document.getElementById("play");
+        var song = new Audio();
+        var currentSong = 0;
+        window.onload = playSong;
+
+        function playSong() {
+            song.src = songs[currentSong];
+            songName.textContent = nameSongs[currentSong];
+            songArtist.textContent = artists[currentSong];
+            Play.setAttribute('class', 'fa fa-play');
+            song.play();
+        }
+
+        function playPause() {
+            if (song.paused) {
+                song.play();
+
+
+                Play.setAttribute('class', 'fa fa-pause');
+
+            } else {
+                song.pause();
+
+                Play.setAttribute('class', 'fa fa-play');
+            }
+        }
+        song.addEventListener('timeupdate', function() {
+
+            var position = song.currentTime / song.duration;
+            expandingBar.style.width = position * 100 + '%';
+            convertTime(Math.round(song.currentTime));
+            if (song.ended) {
+                next();
+            }
+        });
+
+        function convertTime(seconds) {
+            var min = Math.floor(seconds / 60);
+            var sec = seconds % 60;
+            min = (min < 10) ? "0" + min : min;
+            sec = (sec < 10) ? "0" + sec : sec;
+            timeNow.textContent = min + ":" + sec;
+            totalTime(Math.round(song.duration));
+        }
+
+        function totalTime(seconds) {
+            var min = Math.floor(seconds / 60);
+            var sec = seconds % 60;
+            min = (min < 10) ? "0" + min : min;
+            sec = (sec < 10) ? "0" + sec : sec;
+            timeNow.textContent += " / " + min + ":" + sec;
+
+        }
+
+        function next() {
+            currentSong++;
+            if (currentSong > 2) {
+                currentSong = 0;
+            }
+            playSong();
+            $("#play").removeClass("fa fa-play").addClass("fa fa-pause");
+            $("#containertop img").attr("src", posters[currentSong]);
+        }
+
+        function pre() {
+            currentSong--;
+            if (currentSong > 0) {
+                currentSong = 2;
+            }
+            playSong();
+            $("#play").removeClass("fa-play").addClass("fa-pause");
+            $("#containertop img").attr("src", posters[currentSong]);
+        }
+    </script>
+</body>
+
+</html>
